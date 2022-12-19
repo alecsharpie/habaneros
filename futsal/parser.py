@@ -44,15 +44,14 @@ def parse_history(soup):
         date_col = game.find('div', 'col-lg-5')
         if date_col:
 
-            date_elem = date_col.find(
-                'div', class_='col-md pb-3 pb-lg-0 text-center text-md-left')
+            date_elem = date_col.find('div', class_='col-md pb-3 pb-lg-0 text-center text-md-left')
 
             date = _html_to_str(date_elem)
 
             round_id, date, time = date.split('\n')
 
-        result_col = game.find('div',
-                               class_='col-lg-3 pb-3 pb-lg-0 text-center')
+        result_col = game.find('div', class_='col-lg-3 pb-3 pb-lg-0 text-center')
+
         if result_col and result_col.find('div', class_='badge'):
 
             results_block = result_col.find_all('div')[1].text.strip()
@@ -71,7 +70,7 @@ def parse_history(soup):
                 home_score = score[0]
                 away_score = score[1]
 
-            team = result_col.find('a')
+            team = result_col.find('a').text
 
             game_dict = {
                 'round_id': round_id,
@@ -80,12 +79,12 @@ def parse_history(soup):
                 'Home': home_score,
                 'Away': away_score,
                 'Result': result,
-                'Team': team.text
+                'Team': team
             }
 
-        data.append(game_dict)
+            data.append(game_dict)
 
-    return game_dict
+    return pd.DataFrame(data).set_index('Team')
 
 
 test = 'https://www.revolutionise.com.au/futsalhqsuper5s/teams/7347/&t=103296'
