@@ -1,4 +1,5 @@
 from futsal.utils import _html_to_str
+from futsal.data import get_positions_table
 import pandas as pd
 
 
@@ -87,6 +88,23 @@ def parse_history(soup):
     return pd.DataFrame(data).set_index('Team')
 
 
-test = 'https://www.revolutionise.com.au/futsalhqsuper5s/teams/7347/&t=103296'
+def index_position(team_name):
+
+    position = str(
+        parse_positions_table(
+            get_positions_table()).loc[team_name, 'Position'])
+
+    if position == '1':
+        position = '🥇'
+    elif position == '2':
+        position = '🥈'
+    elif position == '3':
+        position = '🥉'
+    else:
+        position = position + 'th'
+
+    return position
+
+# test = 'https://www.revolutionise.com.au/futsalhqsuper5s/teams/7347/&t=103296'
 
 # print(parse_history(get_history(test)))

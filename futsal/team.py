@@ -12,6 +12,7 @@ class HomeTeam:
         self.team_name = team_name
         self.base_url = base_url
         self.games = self.all_games()
+        self.next_opponent = self.next_opponent()
 
     def all_games(self):
 
@@ -57,6 +58,21 @@ class HomeTeam:
         return opponent_past_games
 
 
+    def future_opponents(self):
+
+        future_opponents_past_games = [parse_history(get_history(game.get('Opponent').get('url'))) for game in self.future_games()]
+
+        return future_opponents_past_games
+
+
+    def foresight(self):
+
+        for opponent, game in zip(self.future_opponents(), self.future_games()):
+            game['Opponent']['history'] = opponent
+
+        return self.future_games()
+
+
 ht = HomeTeam('Habaneros F.C.', os.environ['BASE_URL'])
 
-print(ht.next_opponent())
+print(ht.foresight())
