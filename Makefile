@@ -4,7 +4,7 @@ img-build:
 	docker build -t ${IMG_NAME} .
 
 img-run:
-	docker run -e PORT=8000 -p 8000:8000 ${IMG_NAME}
+	docker run --env-file .env -p 8000:8000 ${IMG_NAME}
 
 img-push:
 	docker push ${IMG_NAME}
@@ -14,4 +14,5 @@ img-deploy:
 			--image ${IMG_NAME} \
 			--platform managed \
 			--region asia-east1 \
-			--allow-unauthenticated
+			--allow-unauthenticated \
+			--env-vars-file env.yaml

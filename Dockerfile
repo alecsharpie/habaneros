@@ -9,6 +9,7 @@ RUN pip install -r requirements.txt
 
 COPY futsal/ futsal/
 COPY app.py app.py
+COPY .streamlit/config.toml .streamlit/config.toml
 
 EXPOSE $PORT
 
