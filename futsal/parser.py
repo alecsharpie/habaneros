@@ -85,7 +85,16 @@ def parse_history(soup):
 
             data.append(game_dict)
 
-    return pd.DataFrame(data).set_index('Team')
+    df = pd.DataFrame(data).set_index('Team')
+
+    df[['Home', 'Away']] = df[['Home', 'Away']].astype(int)
+    # df['Away'] = df['Away'].astype(int)
+
+    df['Diff'] = df['Home'] - df['Away']
+
+    df['DateTime'] = pd.to_datetime(df['Date'] + ' ' + df['Time'])
+
+    return df
 
 
 def index_position(team_name):

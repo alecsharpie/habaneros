@@ -1,6 +1,8 @@
 import streamlit as st
-from futsal.parser import parse_positions_table, index_position
-from futsal.data import get_positions_table
+import plotly.express as px
+import plotly.graph_objects as go
+
+from futsal.parser import index_position
 
 from futsal.team import HomeTeam
 
@@ -41,9 +43,8 @@ hometeam = HomeTeam(team_name,
 # load_hometeam()
 
 st.markdown(f"""
-## _Upcoming games..._
+### _Upcoming games..._
 """)
-
 
 for team in hometeam:
 
@@ -54,8 +55,6 @@ for team in hometeam:
     div.markdown(f"""
     ### {team['Opponent']['name']} ({position})
     """)
-
-
 
     info, stats = div.columns(2)
 
@@ -68,3 +67,81 @@ for team in hometeam:
     ### {team['Time']}
     #### {" ".join(team['Date'].split()[1:-1])}
     """)
+
+    stats.markdown(f"""game history""")
+
+    df = team['Opponent']['history']
+
+    df = df.reset_index().set_index('DateTime')
+
+    # print(df)
+
+    df = df.resample('H').interpolate()
+
+    print(df)
+
+    # fig = px.scatter(
+    #     df,
+    #     x=df.index,
+    #     y="Diff",
+    #     color='Diff',
+    #     colorscale = [[0, 'rgba(214, 39, 40, 0.85)'],
+    #            [0.142, 'rgba(255, 255, 255, 0.85)'],
+    #            [1, 'rgba(6,54,21, 0.85)']],
+    #     hover_name=df['Team'],
+    #     labels={
+    #         "Diff": "Goal Difference",
+    #         "x": "Date"
+    #     },
+    # )
+
+    df_points  = df[~df['Result'].isnull()]
+
+    print(df_points)
+
+    # fig.add_scatter(
+    #     x=df_points.index,
+    #     y=df_points.Diff,
+    #     fill=df_points.Diff,
+    #     color_continuous_scale='Turbo',
+    #     hover_name=df_points['Team'],
+    #     labels={
+    #         "Diff": "Goal Difference",
+    #         "x": "Date"
+    #     },
+    # )
+
+
+    fig = go.Figure()
+
+    # Add traces
+    fig.add_trace(
+        go.Scatter(
+            x=df.index,
+            y=df.Diff,
+            hoverinfo='all',
+            #    labels={
+            #        "Diff": "Goal Difference",
+            #        "x": "Date"
+            #    },
+            mode='markers',
+            name='markers',
+            marker=dict(size=4,
+                        color=df.Diff,
+                        colorscale=[[0, 'rgba(32, 103, 172, 0.85)'],
+                                    [0.2, 'rgba(255, 255, 201, 0.85)'],
+                                    [1, 'rgba(223, 84, 74, 0.85)']],
+                        showscale=True)))
+
+
+    # fig.add_trace(go.Scatter(x=random_x, y=random_y2,
+    #                     mode='lines',
+    #                     name='lines'))
+
+
+    fig.update_layout(height=300,
+    yaxis_range=[-10,10],
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)")
+
+    stats.plotly_chart(fig, theme=None, use_container_width=True)

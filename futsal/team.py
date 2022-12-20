@@ -12,7 +12,7 @@ class HomeTeam:
         self.team_name = team_name
         self.base_url = base_url
         self.games = self.all_games()
-        self.next_opponent = self.next_opponent()
+        # self.next_opponent = self.next_opponent()
 
     def all_games(self):
 
@@ -73,6 +73,6 @@ class HomeTeam:
         return self.future_games()
 
 
-ht = HomeTeam('Habaneros F.C.', os.environ['BASE_URL'])
+# ht = HomeTeam('Habaneros F.C.', os.environ['BASE_URL'])
 
-print(ht.foresight())
+# print(ht.foresight())
