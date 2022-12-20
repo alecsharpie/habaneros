@@ -18,7 +18,7 @@ class HomeTeam:
 
         games_list = []
 
-        for round_id in range(1, 13):
+        for round_id in range(1, 14):
 
             params = {'r': round_id,
             'd': 15983}
@@ -71,8 +71,3 @@ class HomeTeam:
             game['Opponent']['history'] = opponent
 
         return self.future_games()
-
-
-# ht = HomeTeam('Habaneros F.C.', os.environ['BASE_URL'])
-
-# print(ht.foresight())

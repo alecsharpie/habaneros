@@ -57,17 +57,20 @@ def parse_history(soup):
 
             results_block = result_col.find_all('div')[1].text.strip()
 
-            result = results_block.replace(' - ', '-').split(' ')[1]
+            result = results_block.replace(' - ', '-').split(' ')[1].strip()
 
             score = results_block.replace(' - ', '-').split(' ')[0].split("-")
 
-            if result == "Won":
+            score = [int(x) for x in score]
+
+
+            if result == "Win":
                 home_score = max(score)
                 away_score = min(score)
             elif result == "Loss":
                 home_score = min(score)
                 away_score = max(score)
-            else:
+            elif result == "Draw":
                 home_score = score[0]
                 away_score = score[1]
 
@@ -87,10 +90,7 @@ def parse_history(soup):
 
     df = pd.DataFrame(data).set_index('Team')
 
-    df[['Home', 'Away']] = df[['Home', 'Away']].astype(int)
-    # df['Away'] = df['Away'].astype(int)
-
-    df['Diff'] = df['Home'] - df['Away']
+    df['Diff'] = df['Home'].astype(int) - df['Away'].astype(int)
 
     df['DateTime'] = pd.to_datetime(df['Date'] + ' ' + df['Time'])
 
